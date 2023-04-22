@@ -10,7 +10,6 @@ const sequencias = [
     [0,4,8],
     [2,4,6]
 ]
-//const socket = io()
 
 let jogador = 'X'
 
@@ -22,7 +21,10 @@ function desenha() {
         button.classList.add('btn-jogo');
         button.innerText = velha[i];
         button.addEventListener('click',()=>{
-            if(button.innerText === '')preenche(i)
+            if(button.innerText === ''){
+                preenche(i)
+                desativaVelha()
+            }
         })
         divVelha.appendChild(button);
     }
@@ -46,11 +48,21 @@ function checaJogo(){
                 console.log('ganhou o jogador ' + jogador)
             }
     }
-
     if(!velha.includes('') && !gameOver){
         console.log('deu empate')
     }
 }
 
-desenha()
+function desativaVelha(){
+    let btnVelha = document.querySelectorAll('.btn-jogo')
+    for(i in btnVelha){
+        btnVelha[i].disabled = true
+    }   
+}
 
+function ativaVelha(){
+    let btnVelha = document.querySelectorAll('.btn-jogo')
+    for(i in btnVelha){
+        btnVelha[i].disabled = false
+    }   
+}

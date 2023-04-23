@@ -41,7 +41,7 @@ function checaJogo(){
             velha[sequencias[i][1]] === 'X' &&
             velha[sequencias[i][2]] === 'X'){
                 gameOver = true
-                console.log('Jogo terminou venceu o jogador X 1')
+                exibirMsg('Jogo terminou venceu o jogador X')
                 desativaVelha()
                 break
             }
@@ -52,7 +52,7 @@ function checaJogo(){
             velha[sequencias[i][1]] === 'O' &&
             velha[sequencias[i][2]] === 'O'){
                 gameOver = true
-                console.log('Jogo terminou venceu o jogador O')
+                exibirMsg('Jogo terminou venceu o jogador O')
                 desativaVelha()
             }
     }
@@ -136,34 +136,32 @@ function enviarMsg(msg){
 }   
 
 
-function exibirMsg(nick, msg){
+function exibirMsg(msg){
     let li = document.createElement('li')
-    li.textContent = `${nick} diz: ${msg}`
+    li.textContent = `${msg}`
     chatContainer.appendChild(li)
 }
 
-socket.on('msg', (msg, nick)=>{
-    console.log(`Usuario ${nick} enviou a msg: ${msg}`);
-    exibirMsg(nick, msg)
+socket.on('msg', (msg)=>{
+    exibirMsg(msg)
 })
 
-socket.on('jogador', (arg1, arg2)=>{
-    if(arg1 === 'X'){
-        player = arg1
+socket.on('jogador', (charPlayer, serverMsg)=>{
+    if(charPlayer === 'X'){
+        player = charPlayer
         desenha()
         desativaVelha()
-        console.log(player)
-        console.log(arg1)
+        exibirMsg(serverMsg)
     }else{
-        player = arg1
+        player = charPlayer
         desenha()
         desativaVelha()
-        console.log(player)
-        console.log(arg1)
+        exibirMsg('Aguarde sua jogada!')
     }
+
 })
 
-socket.on('comeca', ()=>{
+socket.on('comeca', (entrou)=>{
     if(player === 'X') ativaVelha()
 })
 

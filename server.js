@@ -28,12 +28,13 @@ io.on("connection", (socket) => {
     console.log('Number of clients',io.sockets.adapter.rooms.get(sala.sala).size)
 
     if(io.sockets.adapter.rooms.get(sala.sala).size == 1){
-      socket.emit('jogador', 'X')
+      socket.emit('jogador', 'X', 'Aguarde outro player entrar na sala')
     }
 
     if(io.sockets.adapter.rooms.get(sala.sala).size == 2){
-      socket.emit('jogador', 'O')
-      io.to(sala.sala).emit('comeca')
+      socket.emit('jogador', 'O', 'Aguarde sua vez!')
+      io.emit('comeca')
+      socket.broadcast.to(sala.sala).emit('msg',`${sala.nick} entrou no jogo!`)
     }
 
     if(io.sockets.adapter.rooms.get(sala.sala).size > 2){

@@ -36,6 +36,11 @@ io.on("connection", (socket) => {
       io.to(sala.sala).emit('comeca')
     }
 
+    if(io.sockets.adapter.rooms.get(sala.sala).size > 2){
+      io.sockets.adapter.rooms.get(sala.sala).delete(socket.id)
+      console.log('Number of clients',io.sockets.adapter.rooms.get(sala.sala).size)
+    }
+
     socket.on('passa-vez', (velha, player)=>{
         io.to(sala.sala).emit('proximo', velha, player)
     })

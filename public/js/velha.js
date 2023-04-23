@@ -22,20 +22,17 @@ function desenha() {
         button.addEventListener('click',()=>{
             if(button.innerText === ''){
                 preenche(i)
-                desativaVelha()
                 passaVez()
+                desativaVelha()
             }
         })
         divVelha.appendChild(button);
     }
 }
 
-//const trocaPlayer = ()=> jogador === 'X' ? jogador = 'O' : jogador = 'X'
-
 function preenche(i){
     velha[i] = player
     desenha()
-    checaJogo()
 }
 
 function checaJogo(){
@@ -44,7 +41,9 @@ function checaJogo(){
             velha[sequencias[i][1]] === 'X' &&
             velha[sequencias[i][2]] === 'X'){
                 gameOver = true
-                console.log('Jogo terminou venceu o jogador X')
+                console.log('Jogo terminou venceu o jogador X 1')
+                desativaVelha()
+                break
             }
     }
 
@@ -54,11 +53,13 @@ function checaJogo(){
             velha[sequencias[i][2]] === 'O'){
                 gameOver = true
                 console.log('Jogo terminou venceu o jogador O')
+                desativaVelha()
             }
     }
 
     if(!velha.includes('') && !gameOver){
         console.log('deu empate')
+        desativaVelha()
     }
 }
 
@@ -166,20 +167,15 @@ socket.on('comeca', ()=>{
     if(player === 'X') ativaVelha()
 })
 
-
-
 function passaVez(){
     socket.emit('passa-vez', velha, player)
 }
 
 socket.on('proximo', (jogada, pl)=>{
     velha = jogada
-    
     if(player !== pl){
         desenha()
-        ativaVelha()
-        
+        ativaVelha()    
     }
-    console.log(jogada)
     checaJogo()
 })

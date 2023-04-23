@@ -1,5 +1,6 @@
 let velha = ['','','','','','','','','']
 let gameOver = false
+let player
 const sequencias = [
     [0,1,2],
     [3,4,5],
@@ -10,8 +11,6 @@ const sequencias = [
     [0,4,8],
     [2,4,6]
 ]
-
-let jogador = 'X'
 
 function desenha() {
     const divVelha = document.getElementById('velha')
@@ -24,30 +23,40 @@ function desenha() {
             if(button.innerText === ''){
                 preenche(i)
                 desativaVelha()
+                passaVez()
             }
         })
         divVelha.appendChild(button);
     }
 }
 
-const trocaPlayer = ()=> jogador === 'X' ? jogador = 'O' : jogador = 'X'
+//const trocaPlayer = ()=> jogador === 'X' ? jogador = 'O' : jogador = 'X'
 
 function preenche(i){
-    velha[i] = jogador
+    velha[i] = player
     desenha()
     checaJogo()
-    trocaPlayer()
 }
 
 function checaJogo(){
-    for(i in sequencias){
-        if( velha[sequencias[i][0]] === jogador &&
-            velha[sequencias[i][1]] === jogador &&
-            velha[sequencias[i][2]] === jogador){
+    for(let i in sequencias){
+        if( velha[sequencias[i][0]] === 'X' &&
+            velha[sequencias[i][1]] === 'X' &&
+            velha[sequencias[i][2]] === 'X'){
                 gameOver = true
-                console.log('ganhou o jogador ' + jogador)
+                console.log('Jogo terminou venceu o jogador X')
             }
     }
+
+    for(let i in sequencias){
+        if( velha[sequencias[i][0]] === 'O' &&
+            velha[sequencias[i][1]] === 'O' &&
+            velha[sequencias[i][2]] === 'O'){
+                gameOver = true
+                console.log('Jogo terminou venceu o jogador O')
+            }
+    }
+
     if(!velha.includes('') && !gameOver){
         console.log('deu empate')
     }
@@ -55,14 +64,122 @@ function checaJogo(){
 
 function desativaVelha(){
     let btnVelha = document.querySelectorAll('.btn-jogo')
-    for(i in btnVelha){
+    for(let i in velha){
         btnVelha[i].disabled = true
     }   
 }
 
 function ativaVelha(){
     let btnVelha = document.querySelectorAll('.btn-jogo')
-    for(i in btnVelha){
+    for(let i in velha){
         btnVelha[i].disabled = false
     }   
 }
+
+
+
+
+
+
+
+
+
+
+
+const socket = io()
+let btnNick = document.getElementById('btn-nick')
+let inputNick = document.getElementById('nick')
+let inputSala = document.getElementById('sala')
+let btnSala = document.getElementById('btn-sala')
+let btnEnviar = document.getElementById('enviar')
+let inputMsg = document.getElementById('chat-input')
+let chatContainer = document.getElementById('chat-container')
+
+
+let salaOpts = {
+    nick,
+    sala
+}
+
+let msgOpts = {}
+
+btnNick.addEventListener('click', function(){
+    if(inputNick.value !== ''){
+        salaOpts.nick = inputNick.value  
+        inputNick.disabled = true
+        btnNick.disabled = true
+    }
+})
+
+btnSala.addEventListener('click', function(){
+    if(inputNick.value !== ''){
+        salaOpts.sala = inputSala.value  
+        btnSala.disabled = true
+        inputSala.disabled = true
+        criarSala()
+    }
+})
+
+btnEnviar.addEventListener('click', function(){
+    msgOpts.msg = inputMsg.value 
+    enviarMsg(msgOpts.msg)
+    inputMsg.value = ''
+})
+
+function criarSala(){
+    socket.emit('criar-sala', salaOpts)
+}
+
+function enviarMsg(msg){
+    socket.emit('msg-de-sala', msg, salaOpts.sala, salaOpts.nick)
+}   
+
+
+function exibirMsg(nick, msg){
+    let li = document.createElement('li')
+    li.textContent = `${nick} diz: ${msg}`
+    chatContainer.appendChild(li)
+}
+
+socket.on('msg', (msg, nick)=>{
+    console.log(`Usuario ${nick} enviou a msg: ${msg}`);
+    exibirMsg(nick, msg)
+})
+
+socket.on('jogador', (arg1, arg2)=>{
+    if(arg1 === 'X'){
+        player = arg1
+        desenha()
+        desativaVelha()
+        console.log(player)
+        console.log(arg1)
+    }else{
+        player = arg1
+        desenha()
+        desativaVelha()
+        console.log(player)
+        console.log(arg1)
+    }
+})
+
+socket.on('comeca', ()=>{
+    if(player === 'X') ativaVelha()
+})
+
+
+
+function passaVez(){
+    socket.emit('passa-vez', velha, player)
+}
+
+socket.on('proximo', (jogada, pl)=>{
+    velha = jogada
+    
+    if(player !== pl){
+        desenha()
+        ativaVelha()
+        
+    }
+    console.log(jogada)
+    checaJogo()
+})

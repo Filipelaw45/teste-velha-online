@@ -3,7 +3,51 @@
     padding: 0;
     box-sizing: border-box;
 }
-
 body{
     background-color: lightslategrey;
 }
+
+header{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.flex{
+    display: flex;
+}
+
+.main-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.btn-jogo{
+    padding: 10px;
+    font-size: 3rem;
+}
+
+#velha{
+    display: grid;
+    grid-template-columns: 150px 150px 150px;
+    grid-template-rows: 150px 150px 150px;
+}
+
+.chat-jogo-container{
+    display: flex;
+    align-items: center;
+}
+
+#chat-container{
+    background-color: cornflowerblue;
+    height: 500px;
+    width: 500px;
+}
+
+li{
+    list-style: none;
+    font-size: 2rem;
+}
+

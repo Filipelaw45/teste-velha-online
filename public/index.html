@@ -4,100 +4,41 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="img/velha.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
-    <script src="/socket.io/socket.io.js"></script>
-    <title>Jogo da Velha Online</title>
+    <script src="/socket.io/socket.io.js" type="module"></script>
+    <title>Teste</title>
 </head>
 <body>
 
-    <header class="center">
-        <h1>Jogo da velha Online</h1>
+    <header id="header">
+        <h1>Jogo da velha</h1>
+        <div class="flex">
+            <h1>Digite seu nick:</h1>
+            <input type="text" name="nickname" id="nick" autocomplete="off">
+            <button id="btn-nick">Clique aqui</button>
+        </div>
     </header>
 
-    <div id="fade"></div>
+    <main class="main-container">
 
-    <div id="modal-name">
-        <h2>Digite seu nick!</h2>
-        <form>
-            <input type="text" id="name" autocomplete="off">
-            <button type="submit" id="btn-name">Enviar</button>
-        </form>
-    </div>
-
-    <div id="modal-room">
-        <h3>Sala</h3>
-        <form>
-            <label for="room-input">Digite o nome da sala:</label>
-            <input type="text" id="room-input" autocomplete="off">
-            <button type="button" id="btn-close">Fechar</button>
-            <button type="submit" id="btn-room">Enviar</button>
-        </form>
-    </div>
-
-    <div id="modal-game">
-        <div id="velha-container"></div>
-        <div id="chat-container">
-            <h3>Chat</h3>
-            <div id="messages-container"></div>
-            <form>
-                <input type="text" id="message" autocomplete="off">
-                <button type="submit" id="btn-chat">Enviar</button>
-            </form>
+        <div id="convite-container">
+            <h1 id="title">Sala</h1>
+            <input name="convite" type="text" id="sala" autocomplete="off">
+            <button id="btn-sala">Enviar</button>
         </div>
-    </div>
 
-    <main class="container">
-
-        <div id="rooms">
-
-            <div class="center">
-                <h3>Salas ativas</h3>
-                <button id="btn-create-room">Criar Sala</button>
+        <div class="chat-jogo-container">
+            <div id="velha"></div><div>
+                
+                <div id="chat-container" class="chat-container"></div>
+                <input type="text" id="chat-input" autocomplete="off">
+                <button type="submit" id="enviar">Enviar</button>           
             </div>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Nome da Sala</th>
-                        <th>Jogadores</th>
-                        <th>Entrar</th>
-                    </tr>
-                </thead>
-                <tbody id="games">
-                    <tr>
-                        <td>Sala01</td>
-                        <td>1/2</td>
-                        <td><button data-target="btn-entrar">Entrar</button></td>
-                    </tr>
-                    <tr>
-                        <td>Sala02</td>
-                        <td>1/2</td>
-                        <td><button data-target="btn-entrar">Entrar</button></td>
-                    </tr>
-                    <tr>
-                        <td>Sala03</td>
-                        <td>2/2</td>
-                        <td><button data-target="btn-entrar">Entrar</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            
         </div>
 
     </main>
 
-    <aside>
-        <h3>Jogadores Online</h3>
-        <ul>
-            <li>Fulano1</li>
-            <li>Fulano2</li>
-            <li>Fulano3</li>
-            <li>Fulano4</li>
-        </ul>
-    </aside>
-
-    <script src="js/modal.js"></script>
-    <script src="js/velha.js"></script>
+    <script src="js/main.js" type="module"></script>
+    <script src="js/velha.js" type="module"></script>
 </body>
 </html>

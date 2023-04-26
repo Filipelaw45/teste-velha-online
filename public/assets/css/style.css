@@ -1,0 +1,144 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', Arial, sans-serif;
+}
+
+body{
+    background-color: lightslategrey;
+}
+
+header{
+    font-size: 1.5rem;
+    text-align: center;
+    padding: .7rem;
+    width: 100vw;
+    word-wrap: break-word;
+}
+
+
+.main-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100vw;
+}
+
+.btn{
+    padding: .4rem;
+    border: 1px solid #1c1c1c;
+    border-radius: .3rem;
+    font-weight: bold;
+}
+
+.opts-container{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1rem 3rem;
+}
+
+.input-opts{
+    width: 200px;
+    max-width: 80%;
+    padding: .4rem;
+    border: none;
+    border-radius: .3rem;
+}
+
+
+.input-opts:focus{
+    background-color: rgb(206, 207, 211);
+    box-shadow: 0 0 0 0;
+    outline: none;
+}
+
+.btn-jogo{
+    background-color: #FFF;
+    border: 1px solid #1c1c1c;
+    font-size: 4rem;
+    cursor: pointer;
+}
+
+.btn-jogo:disabled{
+    background-color: rgb(251, 194, 194);
+}
+
+#velha{
+    max-width: 400px;
+    width: 90vw;
+    height: 50vh;
+    max-width: 90%;
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-template-rows: 33% 33% 33%;
+    margin-top: 1rem;
+}
+
+.chat-jogo-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.chat{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90vw;
+    height: 400px;
+}
+
+#chat-msg{
+    margin: .3rem;
+    background-color: #FFF;
+    width: 95%;
+    height: 300px;
+    overflow-y: scroll;
+    scroll-behavior: auto;
+    padding: .5rem;
+    word-wrap: break-word;
+}
+
+.msg-inputs{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    width: 90%;
+}
+
+#chat-input{
+    padding: .5rem;
+    width: 70%;
+    margin: .2rem;
+    border: none;
+    border-radius: .3rem;
+}
+
+#chat-input:focus{
+    background-color: rgb(206, 207, 211);
+    box-shadow: 0 0 0 0;
+    outline: none;
+}
+
+li{
+    margin: .6rem .7rem;
+    list-style: none;
+    font-size: 1.5rem;
+    word-wrap: break-word;
+}
+
+
+@media (min-width: 1035px){
+    #velha{
+        width: 600px;
+    }
+}

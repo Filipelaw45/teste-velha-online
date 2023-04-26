@@ -94,7 +94,7 @@ let inputSala = document.getElementById('sala')
 let btnSala = document.getElementById('btn-sala')
 let btnEnviar = document.getElementById('enviar')
 let inputMsg = document.getElementById('chat-input')
-let chatContainer = document.getElementById('chat-container')
+let chatMsg = document.getElementById('chat-msg')
 
 
 let salaOpts = {
@@ -106,7 +106,7 @@ let msgOpts = {}
 
 btnNick.addEventListener('click', function(){
     if(inputNick.value !== ''){
-        salaOpts.nick = inputNick.value  
+        salaOpts.nick = inputNick.value
         inputNick.disabled = true
         btnNick.disabled = true
     }
@@ -139,7 +139,7 @@ function enviarMsg(msg){
 function exibirMsg(msg){
     let li = document.createElement('li')
     li.textContent = `${msg}`
-    chatContainer.appendChild(li)
+    chatMsg.appendChild(li)
 }
 
 socket.on('msg', (msg)=>{

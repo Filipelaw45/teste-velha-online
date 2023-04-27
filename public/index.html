@@ -19,13 +19,17 @@
         <div class="opts-container">
             <div>
                 <h3>Digite seu nick</h3>
-                <input type="text" id="nick" autocomplete="off"  class="input-opts">
-                <button id="btn-nick" class="btn">Enviar</button>
+                <form>
+                    <input type="text" id="nick" autocomplete="off"  class="input-opts">
+                    <button id="btn-nick" class="btn" type="submit">Enviar</button>
+                </form>
             </div>
             <div>
                 <h3 id="title">Criar/Entrar em uma Sala</h3>
-                <input type="text" id="sala" autocomplete="off" class="input-opts">
-                <button id="btn-sala" class="btn">Enviar</button>
+                <form>
+                    <input type="text" id="sala" autocomplete="off" class="input-opts">
+                    <button id="btn-sala" class="btn" type="submit">Enviar</button>
+                </form>
             </div>
         </div>
 
@@ -35,8 +39,10 @@
             <div class="chat">
                 <div id="chat-msg"></div>
                 <div class="msg-inputs">
-                    <input type="text" id="chat-input" autocomplete="off">
-                    <button type="submit" id="enviar" class="btn">Enviar</button>
+                    <form class="chat-form">
+                        <input type="text" id="chat-input" autocomplete="off">
+                        <button type="submit" id="enviar" class="btn" type="submit">Enviar</button>
+                    </form>
                 </div>
             </div>
         </div>

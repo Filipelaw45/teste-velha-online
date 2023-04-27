@@ -129,6 +129,12 @@ header{
     outline: none;
 }
 
+.chat-form{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
 li{
     margin: .6rem .7rem;
     list-style: none;

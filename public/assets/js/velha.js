@@ -104,24 +104,30 @@ let salaOpts = {
 
 let msgOpts = {}
 
-btnNick.addEventListener('click', function(){
+btnNick.addEventListener('click', function(e){
+    e.preventDefault()
     if(inputNick.value !== ''){
         salaOpts.nick = inputNick.value
         inputNick.disabled = true
         btnNick.disabled = true
+        inputSala.focus()
     }
 })
 
-btnSala.addEventListener('click', function(){
+btnSala.addEventListener('click', function(e){
+    e.preventDefault()
     if(inputNick.value !== ''){
         salaOpts.sala = inputSala.value  
         btnSala.disabled = true
         inputSala.disabled = true
         criarSala()
+        return
     }
+    alert("Preencha o seu nick antes de se juntar a uma sala!")
 })
 
-btnEnviar.addEventListener('click', function(){
+btnEnviar.addEventListener('click', function(e){
+    e.preventDefault()
     msgOpts.msg = inputMsg.value 
     enviarMsg(msgOpts.msg)
     inputMsg.value = ''

@@ -80,6 +80,8 @@ io.on("connection", (socket) => {
   })
 });
 
+//adicionar exclusão da sala ao desconectar o player
+
 function criarSala(socket, data){
   socket.name = data.nick
   let salaExiste = rooms.find(sala => sala.nome === data.sala)

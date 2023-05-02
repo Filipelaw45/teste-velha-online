@@ -4,101 +4,53 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="img/velha.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="assets/img/velha.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/style.css">
     <script src="/socket.io/socket.io.js"></script>
     <title>Jogo da Velha Online</title>
 </head>
 <body>
 
-    <header class="center">
-        <h1>Jogo da velha Online</h1>
+    <header id="header">
+        <h1>Jogo da velha</h1>
     </header>
 
-    <div id="fade"></div>
+    <main class="main-container">
 
-    <div class="modal modal-nick">
-        <h2>Digite seu nick!</h2>
-        <form>
-            <input type="text" id="name" autocomplete="off" placeholder="Nome">
-            <button type="submit" id="btn-name" class="btn">Enviar</button>
-        </form>
-    </div>
-
-    <div id="modal-room" class="odal modal-room">
-        <h3>Sala</h3>
-        <form>
-            <label for="room-input">Digite o nome da sala:</label>
-            <input type="text" id="room-input" autocomplete="off">
-            <button type="button" id="btn-close" class="btn close">Fechar</button>
-            <button type="submit" id="btn-room" class="btn">Enviar</button>
-        </form>
-    </div>
-
-    <div id="modal-game" class="odal modal-game">
-        <button>Fechar</button>
-        <div id="velha-container"></div>
-        <div id="chat-container">
-            <h3>Chat</h3>
-            <div id="messages-container"></div>
-            <form>
-                <input type="text" id="message" autocomplete="off">
-                <button type="submit" id="btn-chat" class="btn">Enviar</button>
-            </form>
-        </div>
-    </div>
-
-    <main class="container">
-
-        <div id="rooms">
-
-            <div class="center">
-                <h3>Salas ativas</h3>
-                <button id="btn-create-room">Criar Sala</button>
+        <div class="opts-container">
+            <div>
+                <h3>Digite seu nick</h3>
+                <form>
+                    <input type="text" id="nick" autocomplete="off"  class="input-opts">
+                    <button id="btn-nick" class="btn" type="submit">Enviar</button>
+                </form>
             </div>
+            <div>
+                <h3 id="title">Criar/Entrar em uma Sala</h3>
+                <form>
+                    <input type="text" id="sala" autocomplete="off" class="input-opts">
+                    <button id="btn-sala" class="btn" type="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Nome da Sala</th>
-                        <th>Jogadores</th>
-                        <th>Entrar</th>
-                    </tr>
-                </thead>
-                <tbody id="games">
-                    <tr>
-                        <td>Sala01</td>
-                        <td>1/2</td>
-                        <td><button data-target="btn-entrar">Entrar</button></td>
-                    </tr>
-                    <tr>
-                        <td>Sala02</td>
-                        <td>1/2</td>
-                        <td><button data-target="btn-entrar">Entrar</button></td>
-                    </tr>
-                    <tr>
-                        <td>Sala03</td>
-                        <td>2/2</td>
-                        <td><button data-target="btn-entrar">Entrar</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            
+        <div class="chat-jogo-container">
+            <div id="velha"></div>
+
+            <div class="chat">
+                <div id="chat-msg"></div>
+                <div class="msg-inputs">
+                    <form class="chat-form">
+                        <input type="text" id="chat-input" autocomplete="off">
+                        <button type="submit" id="enviar" class="btn" type="submit">Enviar</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
     </main>
 
-    <aside>
-        <h3>Jogadores Online</h3>
-        <ul>
-            <li>Fulano1</li>
-            <li>Fulano2</li>
-            <li>Fulano3</li>
-            <li>Fulano4</li>
-        </ul>
-    </aside>
-
-    <script src="js/modal.js"></script>
-    <script src="js/velha.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/velha.js"></script>
 </body>
 </html>

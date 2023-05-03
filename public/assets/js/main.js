@@ -35,3 +35,17 @@ btnSala.addEventListener('click', function(e){
 function criarSala(){
     socket.emit('criar-sala', playerOpts)
 }
+
+function limpaInputs(){
+    inputNick.value = ''
+    inputSala.value = ''
+    inputNick.disabled = false
+    inputSala.disabled = false
+    btnNick.disabled = false
+    btnSala.disabled = false
+}
+
+socket.on('sala-erro', (msg)=>{
+    alert(msg)
+    limpaInputs()
+})

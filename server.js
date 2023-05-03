@@ -12,9 +12,23 @@ app.get('/', (req, res) => {
   res.send(__dirname + '/public/index.html');
 });
 
+httpServer.listen(3000, ()=>{
+  console.log(`Servidor iniciado na porta 3000`)
+});
+
 // codigo começa aqui
 
+//objeto com os usuarios online
+let users = []
+//objeto com as salas ativas
+let rooms = [
+  {nome: 'sala1', players: ['jogador1', 'jogador2']},
+  {nome: 'sala2', players: ['fulano']}
+]
+
 io.on("connection", (socket) => {
+
+  console.log(rooms)
   console.log(`Conectado usuário ${socket.id}`)
 
   socket.on('disconnect', ()=>{
@@ -22,29 +36,41 @@ io.on("connection", (socket) => {
   })
   
   
-  socket.on('criar-sala', (sala)=>{
-    socket.join(sala.sala)
-    console.log(`${sala.nick} se juntou a sala ${sala.sala}`)
-    console.log('Number of clients',io.sockets.adapter.rooms.get(sala.sala).size)
+  socket.on('criar-sala', (data)=>{
+    criarSala(socket, data)
+    // console.log(io.sockets.adapter.rooms.get(data.sala))
+    // if(io.sockets.adapter.rooms.get(data.sala).size <= 2){
+    //   socket.join(data.sala)
+    //   if(io.sockets.adapter.rooms.get(data.sala).size == 1){
+    //     data.simbolo = 'X'
+    //     return
+    //   }
+    //   data.simbolo = 'O'
+    // }
 
-    if(io.sockets.adapter.rooms.get(sala.sala).size == 1){
-      socket.emit('jogador', 'X', 'Aguarde outro player entrar na sala')
-    }
 
-    if(io.sockets.adapter.rooms.get(sala.sala).size == 2){
-      socket.emit('jogador', 'O', 'Aguarde sua vez!')
-      io.emit('comeca')
-      socket.broadcast.to(sala.sala).emit('msg',`${sala.nick} entrou no jogo!`)
-    }
 
-    if(io.sockets.adapter.rooms.get(sala.sala).size > 2){
-      io.sockets.adapter.rooms.get(sala.sala).delete(socket.id)
-      console.log('Number of clients',io.sockets.adapter.rooms.get(sala.sala).size)
-    }
+    // console.log(data)
+    // socket.join(data.sala)
+    // console.log(`${sala.nick} se juntou a sala ${sala.sala}`)
+    // console.log('Number of clients',io.sockets.adapter.rooms.get(sala.sala).size)
 
-    socket.on('passa-vez', (velha, player)=>{
-        io.to(sala.sala).emit('proximo', velha, player)
-    })
+    
+
+    // if(io.sockets.adapter.rooms.get(sala.sala).size == 2){
+    //   socket.emit('jogador', 'O', 'Aguarde sua vez!')
+    //   io.emit('comeca')
+    //   socket.broadcast.to(sala.sala).emit('msg',`${sala.nick} entrou no jogo!`)
+    // }
+
+    // if(io.sockets.adapter.rooms.get(sala.sala).size > 2){
+    //   io.sockets.adapter.rooms.get(sala.sala).delete(socket.id)
+    //   console.log('Number of clients',io.sockets.adapter.rooms.get(sala.sala).size)
+    // }
+
+    // socket.on('passa-vez', (velha, player)=>{
+    //     io.to(sala.sala).emit('proximo', velha, player)
+    // })
 
   })
 
@@ -54,4 +80,25 @@ io.on("connection", (socket) => {
   })
 });
 
-httpServer.listen(3000);
+//adicionar exclusão da sala ao desconectar o player
+
+function criarSala(socket, data){
+  socket.name = data.nick
+  let salaExiste = rooms.find(sala => sala.nome === data.sala)
+
+  if(salaExiste){
+    if(salaExiste.players.length < 2){
+      socket.join(`${data.sala}`)
+      salaExiste.players.push(socket.name)
+    }else{
+      console.log('sala cheia!')
+      return
+    }
+  }else{
+    const novaSala = {
+      nome: data.sala,
+      players: [data.nick],
+    }
+    rooms.push(novaSala)
+  }
+}

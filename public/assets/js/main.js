@@ -1,7 +1,7 @@
 let btnNick = document.getElementById('btn-nick')
 let inputNick = document.getElementById('nick')
-let inputSala = document.getElementById('sala')
-let btnSala = document.getElementById('btn-sala')
+let inputRoom = document.getElementById('room')
+let btnRoom = document.getElementById('btn-room')
 
 let playerOpts = {}
 
@@ -13,39 +13,39 @@ btnNick.addEventListener('click', function(e){
         playerOpts.nick = inputNick.value
         inputNick.disabled = true
         btnNick.disabled = true
-        inputSala.focus()
+        inputRoom.focus()
         return
     }
-    alert('Preencha os Nick!')
+    alert('Preencha o Nick!')
 })
 
-btnSala.addEventListener('click', function(e){
+btnRoom.addEventListener('click', function(e){
     e.preventDefault()
-    if(inputSala.value !== '' && inputNick.value !== ''){
-        playerOpts.sala = inputSala.value
-        btnSala.disabled = true
-        inputSala.disabled = true
-        criarSala()
+    if(inputRoom.value !== '' && inputNick.value !== ''){
+        playerOpts.room = inputRoom.value
+        btnRoom.disabled = true
+        inputRoom.disabled = true
+        createRoom()
         return
     }
     alert('Preencha os campos!')
     
 })
 
-function criarSala(){
-    socket.emit('criar-sala', playerOpts)
+function createRoom(){
+    socket.emit('create-room', playerOpts)
 }
 
-function limpaInputs(){
+function clearInputs(){
     inputNick.value = ''
-    inputSala.value = ''
+    inputRoom.value = ''
     inputNick.disabled = false
-    inputSala.disabled = false
+    inputRoom.disabled = false
     btnNick.disabled = false
-    btnSala.disabled = false
+    btnRoom.disabled = false
 }
 
-socket.on('sala-erro', (msg)=>{
+socket.on('room-erro', (msg)=>{
     alert(msg)
-    limpaInputs()
+    clearInputs()
 })

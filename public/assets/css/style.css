@@ -56,16 +56,6 @@ header{
     outline: none;
 }
 
-.btn-jogo{
-    background-color: #FFF;
-    border: 1px solid #1c1c1c;
-    font-size: 4rem;
-    cursor: pointer;
-}
-
-.btn-jogo:disabled{
-    background-color: rgb(251, 194, 194);
-}
 
 #velha{
     max-width: 400px;
@@ -78,7 +68,7 @@ header{
     margin-top: 1rem;
 }
 
-.chat-jogo-container{
+.chat-game-container{
     display: flex;
     flex-direction: column;
     align-items: center;

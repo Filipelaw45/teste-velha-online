@@ -81,12 +81,6 @@
 
 
 
-
-
-
-
-
-
 // const socket = io()
 
 // let btnEnviar = document.getElementById('enviar')

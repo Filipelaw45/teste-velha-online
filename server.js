@@ -20,13 +20,12 @@ httpServer.listen(3000, () => {
 
 //objeto com as salas ativas
 let rooms = [
-  { nome: 'sala1', players: ['jogador1', 'jogador2'] },
-  { nome: 'sala2', players: ['fulano'] }
+  { name: 'sala1', players: ['jogador1', 'jogador2'] },
+  { name: 'sala2', players: ['fulano'] }
 ]
 
 io.on("connection", (socket) => {
 
-  console.log(rooms)
   console.log(`Conectado usuário ${socket.id}`)
 
   socket.on('disconnect', () => {
@@ -34,9 +33,9 @@ io.on("connection", (socket) => {
   })
 
 
-  socket.on('criar-sala', (data) => {
-    criarSala(socket, data)
-    definirSimbolo(socket)
+  socket.on('create-room', (playerData) => {
+    createRoom(socket, playerData)
+    simbolDefine(socket)
     // console.log(io.sockets.adapter.rooms.get(data.sala))
     // if(io.sockets.adapter.rooms.get(data.sala).size <= 2){
     //   socket.join(data.sala)
@@ -74,46 +73,47 @@ io.on("connection", (socket) => {
   })
 
 
-  socket.on('msg-de-sala', (msg, sala, nick) => {
-    io.to(sala).emit('msg', msg, nick)
-  })
+  // socket.on('msg-de-sala', (msg, sala, nick) => {
+  //   io.to(sala).emit('msg', msg, nick)
+  // })
 });
 
 //adicionar exclusão da sala ao desconectar o player
 
-function criarSala(socket, data) {
-  socket.name = data.nick
-  let salaExiste = rooms.find(sala => sala.nome === data.sala)
+function createRoom(socket, playerData) {
+  console.log(playerData)
+  socket.name = playerData.nick
+  let roomExists = rooms.find(room => room.name === playerData.room)
 
-  if (salaExiste) {
-    if (salaExiste.players.length < 2) {
-      socket.join(`${data.sala}`)
-      salaExiste.players.push(socket.name)
+  if (roomExists) {
+    if (roomExists.players.length < 2) {
+      socket.join(`${playerData.room}`)
+      roomExists.players.push(socket.name)
     } else {
-      socket.emit('sala-erro', 'A sala está cheia!')
+      socket.emit('room-erro', 'A sala está cheia!')
       return
     }
   } else {
-    const novaSala = {
-      nome: data.sala,
-      players: [data.nick],
+    const newRoom = {
+      name: playerData.room,
+      players: [playerData.nick],
     }
-    rooms.push(novaSala)
-    socket.join(data.sala)
+    rooms.push(newRoom)
+    socket.join(playerData.room)
   }
 
   console.log(rooms)
 }
 
-function definirSimbolo(socket) {
+function simbolDefine(socket) {
   rooms.map((room) => {
     if (room.players[0] === socket.name) {
-      socket.simbolo = 'X'
-      console.log(`O jogador ${socket.name} é o ${socket.simbolo}`)
+      socket.simbol = 'X'
+      console.log(`O jogador ${socket.name} é o ${socket.simbol}`)
     }
     if (room.players[1] === socket.name) {
-      socket.simbolo = 'O'
-      console.log(`O jogador ${socket.name} é o ${socket.simbolo}`)
+      socket.simbol = 'O'
+      console.log(`O jogador ${socket.name} é o ${socket.simbol}`)
     }
   })
 }

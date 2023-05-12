@@ -49,3 +49,7 @@ socket.on('room-erro', (msg)=>{
     alert(msg)
     clearInputs()
 })
+
+socket.on('server-msg', (msg)=>{
+    alert(msg)
+})

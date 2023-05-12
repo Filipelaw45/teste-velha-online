@@ -19,21 +19,37 @@ httpServer.listen(3000, () => {
 //objeto com as salas ativas
 let rooms = [
   { name: 'sala1', players: ['jogador1', 'jogador2'] },
-  { name: 'sala2', players: ['fulano'] }
+  { name: 'sala2', players: ['fulano'], gameStatus: {
+    velha: ['','','','','','','','',''],
+    gameOver: false
+  } }
 ]
+
+let winSequence = [
+  [0,1,2],
+  [3,4,5],
+  [6,7,8],
+  [0,3,6],
+  [1,4,7],
+  [2,5,8],
+  [0,4,8],
+  [2,4,6]
+]
+
 
 io.on("connection", (socket) => {
 
   console.log(`Conectado usuário ${socket.id}`)
 
   socket.on('disconnect', () => {
-    //adicionar exclusão da sala ao desconectar o player
+    //Lembrete: adicionar exclusão da sala ao desconectar o player
     console.log(`Desconectado usuário ${socket.id}`)
   })
 
   socket.on('create-room', (playerData) => {
     createRoom(socket, playerData)
-    simbolDefine(socket)
+    simbolDefine(socket, playerData)
+    inicializeGame(socket, playerData);
   })
 
 });
@@ -43,9 +59,10 @@ function createRoom(socket, playerData) {
   let roomExists = rooms.find(room => room.name === playerData.room)
 
   if (roomExists) {
-    if (roomExists.players.length < 2) {
+    if (roomExists.players.id.length < 2) {
       socket.join(`${playerData.room}`)
-      roomExists.players.push(socket.name)
+      roomExists.players.id.push(socket.id)
+      roomExists.players.name.push(socket.name)
     } else {
       socket.emit('room-erro', 'A sala está cheia!')
       return
@@ -53,16 +70,37 @@ function createRoom(socket, playerData) {
   } else {
     const newRoom = {
       name: playerData.room,
-      players: [playerData.nick],
+      players: {
+        id: [socket.id],
+        name: [socket.name],
+      },
+      gameStatus: {
+        velha: ['','','','','','','','',''],
+        gameOver: false
+      }
     }
     rooms.push(newRoom)
     socket.join(playerData.room)
   }
 }
 
-function simbolDefine(socket) {
-  rooms.map((room) => {
-    room.players[0] === socket.name ? socket.simbol = 'X' : socket.simbol = 'O'
-  })
+function simbolDefine(socket, playerData) {
+  let socketRoom = rooms.find(room => room.name === playerData.room)
+  socketRoom.players.id[0] == socket.id ? socket.simbol = 'X' : socket.simbol = 'O'
   console.log(`O jogador ${socket.name} é o ${socket.simbol}`)
+
+  // rooms.map((room) => {
+  // Lembrete: criar uma função para validar nicks iguais na mesma sala
+  //   room.players.id[0] === socket.id ? socket.simbol = 'X' : socket.simbol = 'O'
+  // })
+  // console.log(`O jogador ${socket.name} é o ${socket.simbol}`)
+}
+
+function inicializeGame(socket, playerData){
+  let socketRoom = rooms.find(room => room.name === playerData.room)
+  if(socketRoom.players.name.length == 2){
+    io.to(socketRoom.name).emit('server-msg', 'jogo iniciando...')
+    return
+  }
+  socket.emit('server-msg', 'Aguardando segundo jogador!')
 }

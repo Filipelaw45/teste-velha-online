@@ -49,14 +49,22 @@ io.on("connection", (socket) => {
   socket.on('create-room', (playerData) => {
     createRoom(socket, playerData)
     simbolDefine(socket, playerData)
-    inicializeGame(socket, playerData);
+    inicializeGame(socket, playerData)
   })
+
+
+  // logica do game rolando...
+  socket.on('move', simbol=>{
+    
+  })
+
+
 
 });
 
 function createRoom(socket, playerData) {
   socket.name = playerData.nick
-  let roomExists = rooms.find(room => room.name === playerData.room)
+  let roomExists = rooms.find(room => room.room === playerData.room)
 
   if (roomExists) {
     if (roomExists.players.id.length < 2) {
@@ -69,14 +77,15 @@ function createRoom(socket, playerData) {
     }
   } else {
     const newRoom = {
-      name: playerData.room,
+      room: playerData.room,
       players: {
         id: [socket.id],
         name: [socket.name],
       },
       gameStatus: {
         velha: ['','','','','','','','',''],
-        gameOver: false
+        gameOver: false,
+        turn: 'X'
       }
     }
     rooms.push(newRoom)
@@ -85,7 +94,7 @@ function createRoom(socket, playerData) {
 }
 
 function simbolDefine(socket, playerData) {
-  let socketRoom = rooms.find(room => room.name === playerData.room)
+  let socketRoom = rooms.find(room => room.room === playerData.room)
   socketRoom.players.id[0] == socket.id ? socket.simbol = 'X' : socket.simbol = 'O'
   console.log(`O jogador ${socket.name} é o ${socket.simbol}`)
 
@@ -97,10 +106,18 @@ function simbolDefine(socket, playerData) {
 }
 
 function inicializeGame(socket, playerData){
-  let socketRoom = rooms.find(room => room.name === playerData.room)
-  if(socketRoom.players.name.length == 2){
-    io.to(socketRoom.name).emit('server-msg', 'jogo iniciando...')
+  let socketRoom = rooms.find(room => room.room === playerData.room)
+  let {room, gameStatus, players} = socketRoom
+  console.log(socketRoom)
+  if(players.name.length == 2){  
+    io.to(room).emit('game-progress', gameStatus.velha, socket.simbol)
+
+    if(socket.simbol === gameStatus.turn){
+      socket.to(room).emit('server-msg', `Sua vez jogador: ${gameStatus.turn}`)
+      return
+    }
+    socket.to(room).emit('server-msg', `Aguarde sua vez!`)
     return
   }
-  socket.emit('server-msg', 'Aguardando segundo jogador!')
+  io.to(room).emit('server-msg', 'Aguardando segundo jogador!')
 }

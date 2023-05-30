@@ -19,21 +19,23 @@ httpServer.listen(3000, () => {
 //objeto com as salas ativas
 let rooms = [
   { name: 'sala1', players: ['jogador1', 'jogador2'] },
-  { name: 'sala2', players: ['fulano'], gameStatus: {
-    velha: ['','','','','','','','',''],
-    gameOver: false
-  } }
+  {
+    name: 'sala2', players: ['fulano'], gameStatus: {
+      velha: ['', '', '', '', '', '', '', '', ''],
+      gameOver: false
+    }
+  }
 ]
 
 let winSequence = [
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [2,4,6]
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
 ]
 
 
@@ -54,8 +56,8 @@ io.on("connection", (socket) => {
 
 
   // logica do game rolando...
-  socket.on('move', simbol=>{
-    
+  socket.on('move', simbol => {
+
   })
 
 
@@ -83,7 +85,7 @@ function createRoom(socket, playerData) {
         name: [socket.name],
       },
       gameStatus: {
-        velha: ['','','','','','','','',''],
+        velha: ['', '', '', '', '', '', '', '', ''],
         gameOver: false,
         turn: 'X'
       }
@@ -105,14 +107,14 @@ function simbolDefine(socket, playerData) {
   // console.log(`O jogador ${socket.name} é o ${socket.simbol}`)
 }
 
-function inicializeGame(socket, playerData){
+function inicializeGame(socket, playerData) {
   let socketRoom = rooms.find(room => room.room === playerData.room)
-  let {room, gameStatus, players} = socketRoom
+  let { room, gameStatus, players } = socketRoom
   console.log(socketRoom)
-  if(players.name.length == 2){  
+  if (players.name.length == 2) {
     io.to(room).emit('game-progress', gameStatus.velha, socket.simbol)
 
-    if(socket.simbol === gameStatus.turn){
+    if (socket.simbol === gameStatus.turn) {
       socket.to(room).emit('server-msg', `Sua vez jogador: ${gameStatus.turn}`)
       return
     }

@@ -1,31 +1,23 @@
-import express from "express";
-import { createServer } from "http";
-import { Server } from "socket.io";
+import express from "express"
+import { createServer } from "http"
+import { Server } from "socket.io"
 
-const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer);
+const app = express()
+const httpServer = createServer(app)
+const io = new Server(httpServer)
 
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-  res.send(__dirname + '/public/index.html');
-});
+  res.send(__dirname + '/public/index.html')
+})
 
 httpServer.listen(3000, () => {
   console.log(`Servidor iniciado na porta 3000`)
-});
+})
 
 //objeto com as salas ativas
-let rooms = [
-  { name: 'sala1', players: ['jogador1', 'jogador2'] },
-  {
-    name: 'sala2', players: ['fulano'], gameStatus: {
-      velha: ['', '', '', '', '', '', '', '', ''],
-      gameOver: false
-    }
-  }
-]
+let rooms = []
 
 let winSequence = [
   [0, 1, 2],
@@ -50,29 +42,43 @@ io.on("connection", (socket) => {
 
   socket.on('create-room', (playerData) => {
     createRoom(socket, playerData)
-    simbolDefine(socket, playerData)
-    inicializeGame(socket, playerData)
+    symbolDefine(playerData)
+    inicializeGame(playerData)
+
+
+    socket.on('move', (positionMove, symbol) => {
+      let roomExists = rooms.find(room => room.room === playerData.room)
+      let { room, gameStatus } = roomExists
+      if (gameStatus.turn == symbol) {
+        gameStatus.velha[positionMove] = symbol
+        gameStatus.turn == 'X' ? gameStatus.turn = 'O' : gameStatus.turn = 'X'
+        checkGame(playerData)
+      } else {
+        io.to(socket.id).emit('room-erro', 'Não é a sua vez!')
+      }
+      io.to(room).emit('game-progress', gameStatus.velha)
+      //io.to(room).emit('game-progress', gameStatus.velha)
+    })
+
   })
 
 
   // logica do game rolando...
-  socket.on('move', simbol => {
 
-  })
 
 
 
 });
 
 function createRoom(socket, playerData) {
-  socket.name = playerData.nick
+  playerData.nick
   let roomExists = rooms.find(room => room.room === playerData.room)
 
   if (roomExists) {
     if (roomExists.players.id.length < 2) {
       socket.join(`${playerData.room}`)
       roomExists.players.id.push(socket.id)
-      roomExists.players.name.push(socket.name)
+      roomExists.players.name.push(playerData.nick)
     } else {
       socket.emit('room-erro', 'A sala está cheia!')
       return
@@ -81,8 +87,10 @@ function createRoom(socket, playerData) {
     const newRoom = {
       room: playerData.room,
       players: {
+        player1: 'X',
+        player2: 'O',
         id: [socket.id],
-        name: [socket.name],
+        name: [playerData.nick],
       },
       gameStatus: {
         velha: ['', '', '', '', '', '', '', '', ''],
@@ -95,31 +103,61 @@ function createRoom(socket, playerData) {
   }
 }
 
-function simbolDefine(socket, playerData) {
+function symbolDefine(playerData) {
   let socketRoom = rooms.find(room => room.room === playerData.room)
-  socketRoom.players.id[0] == socket.id ? socket.simbol = 'X' : socket.simbol = 'O'
-  console.log(`O jogador ${socket.name} é o ${socket.simbol}`)
+  let { players } = socketRoom
 
-  // rooms.map((room) => {
-  // Lembrete: criar uma função para validar nicks iguais na mesma sala
-  //   room.players.id[0] === socket.id ? socket.simbol = 'X' : socket.simbol = 'O'
-  // })
-  // console.log(`O jogador ${socket.name} é o ${socket.simbol}`)
+  io.to(players.id[0]).emit('symbol', players.player1)
+  io.to(players.id[1]).emit('symbol', players.player2)
 }
 
-function inicializeGame(socket, playerData) {
+function inicializeGame(playerData) {
   let socketRoom = rooms.find(room => room.room === playerData.room)
   let { room, gameStatus, players } = socketRoom
   console.log(socketRoom)
   if (players.name.length == 2) {
-    io.to(room).emit('game-progress', gameStatus.velha, socket.simbol)
 
-    if (socket.simbol === gameStatus.turn) {
-      socket.to(room).emit('server-msg', `Sua vez jogador: ${gameStatus.turn}`)
-      return
-    }
-    socket.to(room).emit('server-msg', `Aguarde sua vez!`)
+    io.to(room).emit('server-msg', `Vez jogador: ${gameStatus.turn}`)
+    io.to(room).emit('game-progress', gameStatus.velha)
     return
   }
   io.to(room).emit('server-msg', 'Aguardando segundo jogador!')
+}
+
+
+function checkGame(playerData) {
+  let socketRoom = rooms.find(room => room.room === playerData.room)
+  let { room, gameStatus, players } = socketRoom
+  for (let i in winSequence) {
+    if (gameStatus.velha[winSequence[i][0]] === 'X' &&
+      gameStatus.velha[winSequence[i][1]] === 'X' &&
+      gameStatus.velha[winSequence[i][2]] === 'X') {
+        io.to(room).emit('room-erro', 'jogador X ganhou!')
+        io.to(room).emit('disable-game', true, gameStatus.velha)
+      //gameOver = true
+      //exibirMsg('Jogo terminou venceu o jogador X')
+      //desativaVelha()
+      break
+    }
+  }
+
+  for (let i in winSequence) {
+    if (gameStatus.velha[winSequence[i][0]] === 'O' &&
+      gameStatus.velha[winSequence[i][1]] === 'O' &&
+      gameStatus.velha[winSequence[i][2]] === 'O') {
+      io.to(room).emit('room-erro', 'jogador O ganhou!')
+      io.to(room).emit('disable-game', true, gameStatus.velha)
+      //gameOver = true
+      //exibirMsg('Jogo terminou venceu o jogador O')
+      //desativaVelha()
+      break
+    }
+  }
+
+  if (!gameStatus.velha.includes('') && !gameStatus.gameOver) {
+    io.to(room).emit('room-erro', 'Empate')
+    io.to(room).emit('disable-game', true, gameStatus.velha)
+    //desativaVelha()
+  }
+  //io.to(room).emit('disable-game', true)
 }

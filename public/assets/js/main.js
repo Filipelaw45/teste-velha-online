@@ -1,10 +1,10 @@
-let btnNick = document.getElementById('btn-nick')
 let inputNick = document.getElementById('nick')
+let btnNick = document.getElementById('btn-nick')
 let inputRoom = document.getElementById('room')
 let btnRoom = document.getElementById('btn-room')
 let gameStatusContainer = document.getElementById('server-msg')
 
-let playerOpts = {}
+const playerOpts = {}
 
 const socket = io()
 
@@ -45,13 +45,7 @@ function clearInputs(){
     btnRoom.disabled = false
 }
 
-socket.on('room-erro', (msg)=>{
-    alert(msg)
-    clearInputs()
-})
-
-socket.on('game-progress', (gameArray, simbol)=>{ 
-    const playerSimbol = simbol 
+function draw(gameArray, symbol){
     const divVelha = document.getElementById('velha')
     divVelha.innerHTML = ''
     for(let i in gameArray) {
@@ -60,21 +54,17 @@ socket.on('game-progress', (gameArray, simbol)=>{
         button.innerText = gameArray[i]
         button.addEventListener('click',()=>{
             if(button.innerText === ''){
-                socket.emit('move', playerSimbol)
+                gameArray[i] = symbol
+                //console.log(gameArray)
+                draw(gameArray, symbol)
+                console.log(i)
+                socket.emit('move', i, playerOpts.symbol)
+                //disableVelha(gameArray)
             }
         })
         divVelha.appendChild(button);
     }
-})
-
-socket.on('server-msg', (msg)=>{
-    msgGameStatus(msg)
-})
-
-socket.on('ativa', ()=>{
-    activeVelha()
-})
-
+}
 
 function disableVelha(gameArray){
     let btnVelha = document.querySelectorAll('.btn-jogo')
@@ -87,9 +77,8 @@ function activeVelha(gameArray){
     let btnVelha = document.querySelectorAll('.btn-jogo')
     for(let i in gameArray){
         btnVelha[i].disabled = false
-    }   
+    } 
 }
-
 
 function msgGameStatus(msg){
     let p = document.createElement('p')
@@ -97,3 +86,25 @@ function msgGameStatus(msg){
     gameStatusContainer.innerHTML = ''
     gameStatusContainer.appendChild(p)
 }
+
+socket.on('symbol', symbol=>playerOpts.symbol = symbol)
+
+socket.on('game-progress', (velha)=>draw(velha, playerOpts.symbol))
+
+socket.on('server-msg', (msg)=>{
+    msgGameStatus(msg)
+})
+
+socket.on('ativa', ()=>{
+    activeVelha()
+})
+
+socket.on('room-erro', (msg)=>{
+    alert(msg)
+    clearInputs()
+})
+
+socket.on('disable-game', (resp, velha)=>{
+    console.log('entrei aqui')
+    resp ? disableVelha(velha) : null
+})

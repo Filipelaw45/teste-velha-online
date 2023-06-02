@@ -108,3 +108,8 @@ socket.on('disable-game', (resp, velha)=>{
     console.log('entrei aqui')
     resp ? disableVelha(velha) : null
 })
+
+socket.on('resetRoom', ()=>{
+    console.log('Recarregando a página')
+    window.location
+})

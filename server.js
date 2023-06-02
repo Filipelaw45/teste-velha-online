@@ -38,6 +38,27 @@ io.on("connection", (socket) => {
   socket.on('disconnect', () => {
     //Lembrete: adicionar exclusão da sala ao desconectar o player
     console.log(`Desconectado usuário ${socket.id}`)
+
+    if(rooms != []){
+      let deleteRoom = rooms.find((room, index) => {
+
+        console.log('estou entrando aqui')
+
+        if(room.players.id[0] === socket.id[0]){
+          console.log(`A sala do player[0] é ${room}, no indice ${index}`)
+          io.to(room.players.id[1]).emit('resetRoom')
+        }else{
+          console.log(`A sala do player[1] é ${room}, no indice ${index}`)
+          io.to(room.players.id[0]).emit('resetRoom')
+        }
+
+      })
+      console.log("Essa é a sala a ser deletada"+deleteRoom)
+    }
+
+    
+
+    console.log("A sala tem essas salas"+rooms)
   })
 
   socket.on('create-room', (playerData) => {
@@ -61,11 +82,6 @@ io.on("connection", (socket) => {
     })
 
   })
-
-
-  // logica do game rolando...
-
-
 
 
 });

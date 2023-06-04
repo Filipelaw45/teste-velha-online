@@ -55,11 +55,8 @@ function draw(gameArray, symbol){
         button.addEventListener('click',()=>{
             if(button.innerText === ''){
                 gameArray[i] = symbol
-                //console.log(gameArray)
                 draw(gameArray, symbol)
-                console.log(i)
                 socket.emit('move', i, playerOpts.symbol)
-                //disableVelha(gameArray)
             }
         })
         divVelha.appendChild(button);
@@ -70,7 +67,8 @@ function disableVelha(gameArray){
     let btnVelha = document.querySelectorAll('.btn-jogo')
     for(let i in gameArray){
         btnVelha[i].disabled = true
-    } 
+    }
+    draw(gameArray, null)
 }
 
 function activeVelha(gameArray){
@@ -104,12 +102,14 @@ socket.on('room-erro', (msg)=>{
     clearInputs()
 })
 
-socket.on('disable-game', (resp, velha)=>{
-    console.log('entrei aqui')
-    resp ? disableVelha(velha) : null
+socket.on('disable-game', (velha)=>{
+    console.log('entrei aqui no disable game')
+    disableVelha(velha)
 })
 
 socket.on('resetRoom', ()=>{
-    console.log('Recarregando a página')
-    window.location
+    setInterval(()=>{
+        location.reload()
+    }, 2500)
+    //location.reload()
 })

@@ -36,29 +36,26 @@ io.on("connection", (socket) => {
   console.log(`Conectado usuário ${socket.id}`)
 
   socket.on('disconnect', () => {
-    //Lembrete: adicionar exclusão da sala ao desconectar o player
     console.log(`Desconectado usuário ${socket.id}`)
 
-    if(rooms != []){
-      let deleteRoom = rooms.find((room, index) => {
+    if (rooms != []) {
+      rooms.find((room, index) => {
 
-        console.log('estou entrando aqui')
-
-        if(room.players.id[0] === socket.id[0]){
-          console.log(`A sala do player[0] é ${room}, no indice ${index}`)
+        if (room.players.id[0] === socket.id) {
           io.to(room.players.id[1]).emit('resetRoom')
-        }else{
-          console.log(`A sala do player[1] é ${room}, no indice ${index}`)
+          rooms.splice(index, 1)
+          return
+        }
+
+        if (room.players.id[1] === socket.id) {
           io.to(room.players.id[0]).emit('resetRoom')
+          rooms.splice(index, 1)
+          return
         }
 
       })
-      console.log("Essa é a sala a ser deletada"+deleteRoom)
     }
 
-    
-
-    console.log("A sala tem essas salas"+rooms)
   })
 
   socket.on('create-room', (playerData) => {
@@ -78,11 +75,13 @@ io.on("connection", (socket) => {
         io.to(socket.id).emit('room-erro', 'Não é a sua vez!')
       }
       io.to(room).emit('game-progress', gameStatus.velha)
-      //io.to(room).emit('game-progress', gameStatus.velha)
+
+      if(!gameStatus.gameOver){
+        io.to(room).emit('server-msg', `Vez jogador: ${gameStatus.turn}`)
+      } 
     })
 
   })
-
 
 });
 
@@ -132,8 +131,7 @@ function inicializeGame(playerData) {
   let { room, gameStatus, players } = socketRoom
   console.log(socketRoom)
   if (players.name.length == 2) {
-
-    io.to(room).emit('server-msg', `Vez jogador: ${gameStatus.turn}`)
+    //io.to(room).emit('server-msg', `Vez jogador: ${gameStatus.turn}`)
     io.to(room).emit('game-progress', gameStatus.velha)
     return
   }
@@ -143,16 +141,18 @@ function inicializeGame(playerData) {
 
 function checkGame(playerData) {
   let socketRoom = rooms.find(room => room.room === playerData.room)
-  let { room, gameStatus, players } = socketRoom
+  let { room, gameStatus} = socketRoom
+
   for (let i in winSequence) {
     if (gameStatus.velha[winSequence[i][0]] === 'X' &&
       gameStatus.velha[winSequence[i][1]] === 'X' &&
       gameStatus.velha[winSequence[i][2]] === 'X') {
-        io.to(room).emit('room-erro', 'jogador X ganhou!')
-        io.to(room).emit('disable-game', true, gameStatus.velha)
-      //gameOver = true
-      //exibirMsg('Jogo terminou venceu o jogador X')
-      //desativaVelha()
+      // io.to(room).emit('room-erro', 'jogador X ganhou!')
+      gameStatus.gameOver = true
+      io.to(room).emit('room-erro', 'Jogador X ganhou!')
+      io.to(room).emit('resetRoom')
+      io.to(room).emit('disable-game', gameStatus.velha)
+      io.to(room).emit('server-msg', 'Jogador X ganhou!')
       break
     }
   }
@@ -161,19 +161,23 @@ function checkGame(playerData) {
     if (gameStatus.velha[winSequence[i][0]] === 'O' &&
       gameStatus.velha[winSequence[i][1]] === 'O' &&
       gameStatus.velha[winSequence[i][2]] === 'O') {
-      io.to(room).emit('room-erro', 'jogador O ganhou!')
-      io.to(room).emit('disable-game', true, gameStatus.velha)
-      //gameOver = true
-      //exibirMsg('Jogo terminou venceu o jogador O')
-      //desativaVelha()
+      // io.to(room).emit('room-erro', 'jogador O ganhou!')
+      gameStatus.gameOver = true
+      io.to(room).emit('room-erro', 'Jogador O ganhou!')
+      io.to(room).emit('resetRoom')
+      io.to(room).emit('disable-game', gameStatus.velha)
+      io.to(room).emit('server-msg', 'Jogador O ganhou!')
       break
     }
   }
 
   if (!gameStatus.velha.includes('') && !gameStatus.gameOver) {
+    gameStatus.gameOver = true
     io.to(room).emit('room-erro', 'Empate')
-    io.to(room).emit('disable-game', true, gameStatus.velha)
-    //desativaVelha()
+    io.to(room).emit('resetRoom')
+    io.to(room).emit('disable-game', gameStatus.velha)
+    io.to(room).emit('server-msg', 'Empate!')
   }
-  //io.to(room).emit('disable-game', true)
+
+
 }

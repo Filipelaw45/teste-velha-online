@@ -42,13 +42,17 @@ io.on("connection", (socket) => {
       rooms.find((room, index) => {
 
         if (room.players.id[0] === socket.id) {
-          io.to(room.players.id[1]).emit('resetRoom')
+
+          if(room.players.id.length == 2) io.to(room.players.id[1]).emit('resetRoom')
+
           rooms.splice(index, 1)
           return
         }
 
         if (room.players.id[1] === socket.id) {
-          io.to(room.players.id[0]).emit('resetRoom')
+
+          if(room.players.id.length == 2) io.to(room.players.id[0]).emit('resetRoom')
+
           rooms.splice(index, 1)
           return
         }
@@ -77,7 +81,7 @@ io.on("connection", (socket) => {
       io.to(room).emit('game-progress', gameStatus.velha)
 
       if(!gameStatus.gameOver){
-        io.to(room).emit('server-msg', `Vez jogador: ${gameStatus.turn}`)
+        io.to(room).emit('server-msg', `Vez do: ${gameStatus.turn}`)
       } 
     })
 
@@ -86,14 +90,14 @@ io.on("connection", (socket) => {
 });
 
 function createRoom(socket, playerData) {
-  playerData.nick
+  //playerData.nick
   let roomExists = rooms.find(room => room.room === playerData.room)
 
   if (roomExists) {
     if (roomExists.players.id.length < 2) {
       socket.join(`${playerData.room}`)
       roomExists.players.id.push(socket.id)
-      roomExists.players.name.push(playerData.nick)
+      //roomExists.players.name.push(playerData.nick)
     } else {
       socket.emit('room-erro', 'A sala está cheia!')
       return
@@ -105,7 +109,7 @@ function createRoom(socket, playerData) {
         player1: 'X',
         player2: 'O',
         id: [socket.id],
-        name: [playerData.nick],
+       // name: [playerData.nick],
       },
       gameStatus: {
         velha: ['', '', '', '', '', '', '', '', ''],
@@ -130,8 +134,8 @@ function inicializeGame(playerData) {
   let socketRoom = rooms.find(room => room.room === playerData.room)
   let { room, gameStatus, players } = socketRoom
   console.log(socketRoom)
-  if (players.name.length == 2) {
-    //io.to(room).emit('server-msg', `Vez jogador: ${gameStatus.turn}`)
+  if (players.id.length == 2) {
+    io.to(room).emit('server-msg', `Vez do: ${gameStatus.turn}`)
     io.to(room).emit('game-progress', gameStatus.velha)
     return
   }

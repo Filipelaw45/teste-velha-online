@@ -7,6 +7,30 @@ let gameStatusContainer = document.getElementById('server-msg')
 
 const playerOpts = {}
 
+//
+//
+//
+//  Renomear btn-jogo
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const socket = io()
 
 // btnNick.addEventListener('click', function(e){

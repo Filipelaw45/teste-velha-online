@@ -13,17 +13,23 @@ header{
     font-size: 1.5rem;
     text-align: center;
     padding: .7rem;
-    width: 100vw;
     word-wrap: break-word;
 }
 
+#status{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 1.5rem 0;
+    font-weight: bold;
+}
 
 .main-container{
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
-    width: 100vw;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn{
@@ -33,14 +39,14 @@ header{
     font-weight: bold;
 }
 
-.btn-jogo{
+.btn-game{
     color: #1c1c1c;
     font-weight: bold;
     font-size: 80px;
     text-align: center;
 }
 
-.opts-container{
+.input-container{
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -48,7 +54,7 @@ header{
     gap: 1rem 3rem;
 }
 
-.input-opts{
+#room{
     width: 200px;
     max-width: 80%;
     padding: .4rem;
@@ -56,13 +62,11 @@ header{
     border-radius: .3rem;
 }
 
-
-.input-opts:focus{
+#room:focus{
     background-color: rgb(206, 207, 211);
     box-shadow: 0 0 0 0;
     outline: none;
 }
-
 
 #velha{
     width: 300px;
@@ -73,74 +77,9 @@ header{
     margin-top: 1rem;
 }
 
-.chat-game-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-}
-
-.chat{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 90vw;
-    height: 400px;
-}
-
-#chat-msg{
-    margin: .3rem;
-    background-color: #FFF;
-    width: 95%;
-    height: 300px;
-    overflow-y: scroll;
-    scroll-behavior: auto;
-    padding: .5rem;
-    word-wrap: break-word;
-}
-
-.msg-inputs{
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    width: 90%;
-}
-
-#chat-input{
-    padding: .5rem;
-    width: 70%;
-    margin: .2rem;
-    border: none;
-    border-radius: .3rem;
-}
-
-#chat-input:focus{
-    background-color: rgb(206, 207, 211);
-    box-shadow: 0 0 0 0;
-    outline: none;
-}
-
-.chat-form{
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-li{
-    margin: .6rem .7rem;
-    list-style: none;
-    font-size: 1.5rem;
-    word-wrap: break-word;
-}
-
-
-@media (min-width: 1035px){
+@media (min-width: 900px){
     #velha{
-        width: 600px;
-        height: 600px;
+        width: 550px;
+        height: 550px;
     }
 }

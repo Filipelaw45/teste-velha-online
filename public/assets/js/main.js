@@ -7,6 +7,8 @@ const playerOpts = {}
 
 const socket = io()
 
+inputRoom.focus()
+
 btnRoom.addEventListener('click', function(e){
     e.preventDefault()
     if(inputRoom.value !== ''){
@@ -16,11 +18,11 @@ btnRoom.addEventListener('click', function(e){
         createRoom()
         return
     }
-    alert('Preencha a sala!')   
+    alert('Digite o nome da sala!')   
 })
 
 function createRoom(){
-    socket.emit('create-room', playerOpts)
+    socket.emit('createRoom', playerOpts)
 }
 
 function clearInput(){
@@ -32,6 +34,7 @@ function clearInput(){
 function draw(gameArray, symbol){
     const divVelha = document.getElementById('velha')
     divVelha.innerHTML = ''
+    divVelha.classList.add('black')
     for(let i in gameArray) {
         const button = document.createElement('button');
         button.classList.add('btn-game')
@@ -60,13 +63,31 @@ socket.on('symbol', symbol=>{
     playerOpts.symbol = symbol
 })
 
-socket.on('game-progress', velha => draw(velha, playerOpts.symbol))
+socket.on('gameProgress', velha => draw(velha, playerOpts.symbol))
 
-socket.on('server-msg', (msg)=> msgGameStatus(msg) )
+socket.on('serverMsg', (msg)=> msgGameStatus(msg) )
 
-socket.on('room-erro', (msg)=>{
-    alert(msg)
-    clearInput()
+socket.on('roomMsg', (msg)=>{
+    Toastify({
+        text: msg,
+        className: "info",
+        style: {
+          background: "#f7f7f7",
+          color: "black"
+        }
+      }).showToast();
+})
+
+socket.on('fullRoom', (msg)=>{
+    Toastify({
+        text: msg,
+        className: "info",
+        style: {
+          background: "#d9534f",
+        }
+      }).showToast()
+      clearInput()
+      inputRoom.focus()
 })
 
 socket.on('resetRoom', ()=>{

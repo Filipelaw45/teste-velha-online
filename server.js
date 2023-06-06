@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
     }
   })
 
-  socket.on('create-room', (playerData) => {
+  socket.on('createRoom', (playerData) => {
     createRoom(socket, playerData)
     symbolDefine(playerData)
     inicializeGame(playerData)
@@ -88,11 +88,11 @@ function inicializeGame(playerData) {
   let { room, gameStatus, players } = findRoom(playerData)
 
   if (players.id.length == 2) {
-    io.to(room).emit('server-msg', `Vez do: ${gameStatus.turn}`)
-    io.to(room).emit('game-progress', gameStatus.velha)
+    io.to(room).emit('serverMsg', `Vez do: ${gameStatus.turn}`)
+    io.to(room).emit('gameProgress', gameStatus.velha)
     return
   }
-  io.to(room).emit('server-msg', 'Aguardando segundo jogador!')
+  io.to(room).emit('serverMsg', 'Aguardando segundo jogador!')
 }
 
 
@@ -132,7 +132,7 @@ function joinGame(playerData, room, socket){
     socket.join(`${playerData.room}`)
     room.players.id.push(socket.id)
   } else {
-    socket.emit('room-erro', 'A sala está cheia!')
+    socket.emit('fullRoom', 'A sala está cheia!')
   }
 }
 
@@ -163,13 +163,13 @@ function makeMove(socket, playerData, symbol, positionMove){
     gameStatus.turn == 'X' ? gameStatus.turn = 'O' : gameStatus.turn = 'X'
     checkGame(playerData)
   } else {
-    io.to(socket.id).emit('room-erro', 'Não é a sua vez!')
+    io.to(socket.id).emit('roomMsg', 'Não é a sua vez!')
   }
 
-  io.to(room).emit('game-progress', gameStatus.velha)
+  io.to(room).emit('gameProgress', gameStatus.velha)
 
   if(!gameStatus.gameOver){
-    io.to(room).emit('server-msg', `Vez do: ${gameStatus.turn}`)
+    io.to(room).emit('serverMsg', `Vez do: ${gameStatus.turn}`)
   } 
 
 }
@@ -178,14 +178,13 @@ function winMsg(room, statusGame, winner){
   statusGame.gameOver = true
 
   if(winner){
-    io.to(room).emit('room-erro', `Jogador ${winner} ganhou!`)
-    io.to(room).emit('server-msg', `Jogador ${winner} ganhou!`)
+    io.to(room).emit('roomMsg', `Jogador ${winner} ganhou!`)
+    io.to(room).emit('serverMsg', `Jogador ${winner} ganhou!`)
   }else{
-    io.to(room).emit('room-erro', `Empate!`)
-    io.to(room).emit('server-msg', `Empate!`)
+    io.to(room).emit('roomMsg', `Empate!`)
+    io.to(room).emit('serverMsg', `Empate!`)
   }
 
   io.to(room).emit('resetRoom')
-  io.to(room).emit('disable-game', statusGame.velha)
 
 }

@@ -1,7 +1,5 @@
 # Jogo da Velha Online
 
-## --Em desenvolvimento--
-
 Projeto feito em **HTML, CSS, JavaScript e NodeJS**
 
 O objetivo desse projeto era aprender um pouco mais de comunicação via **WebSocket**.

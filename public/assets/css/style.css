@@ -16,6 +16,10 @@ header{
     word-wrap: break-word;
 }
 
+h3{
+    margin-bottom: .3rem;
+}
+
 #status{
     display: flex;
     flex-direction: row;

@@ -53,30 +53,6 @@ io.on("connection", (socket) => {
     }
   })
 
-  // socket.on('disconnect', () => {
-
-  //   if (rooms != []) {
-  //     rooms.find((room, index) => {
-
-  //       if (room.players.id[0] === socket.id) {
-
-  //         if(room.players.id.length == 2) io.to(room.players.id[1]).emit('resetRoom')
-
-  //         rooms.splice(index, 1)
-  //         return
-  //       }
-
-  //       if (room.players.id[1] === socket.id) {
-
-  //         if(room.players.id.length == 2) io.to(room.players.id[0]).emit('resetRoom')
-
-  //         rooms.splice(index, 1)
-  //         return
-  //       }
-  //     })
-  //   }
-  // })
-
   socket.on('createRoom', (playerData) => {
     createRoom(socket, playerData)
     symbolDefine(playerData)

@@ -33,28 +33,49 @@ let winSequence = [
 io.on("connection", (socket) => {
 
   socket.on('disconnect', () => {
-
-    if (rooms != []) {
-      rooms.find((room, index) => {
-
-        if (room.players.id[0] === socket.id) {
-
-          if(room.players.id.length == 2) io.to(room.players.id[1]).emit('resetRoom')
-
-          rooms.splice(index, 1)
-          return
+    const index = rooms.findIndex(room => room.players.id.includes(socket.id))
+  
+    if (index !== -1) {
+      const room = rooms[index]
+      const playerIndex = room.players.id.findIndex(id => id === socket.id)
+  
+      if (playerIndex !== -1) {
+        const otherPlayerIndex = 1 - playerIndex
+        const otherPlayerId = room.players.id[otherPlayerIndex]
+  
+        if (room.players.id.length === 2) {
+          io.to(otherPlayerId).emit('resetRoom')
         }
-
-        if (room.players.id[1] === socket.id) {
-
-          if(room.players.id.length == 2) io.to(room.players.id[0]).emit('resetRoom')
-
-          rooms.splice(index, 1)
-          return
-        }
-      })
+  
+        room.players.id.splice(playerIndex, 1)
+        rooms.splice(index, 1)
+      }
     }
   })
+
+  // socket.on('disconnect', () => {
+
+  //   if (rooms != []) {
+  //     rooms.find((room, index) => {
+
+  //       if (room.players.id[0] === socket.id) {
+
+  //         if(room.players.id.length == 2) io.to(room.players.id[1]).emit('resetRoom')
+
+  //         rooms.splice(index, 1)
+  //         return
+  //       }
+
+  //       if (room.players.id[1] === socket.id) {
+
+  //         if(room.players.id.length == 2) io.to(room.players.id[0]).emit('resetRoom')
+
+  //         rooms.splice(index, 1)
+  //         return
+  //       }
+  //     })
+  //   }
+  // })
 
   socket.on('createRoom', (playerData) => {
     createRoom(socket, playerData)

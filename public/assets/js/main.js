@@ -34,10 +34,9 @@ function clearInput(){
 function draw(gameArray, symbol){
     const divVelha = document.getElementById('velha')
     divVelha.innerHTML = ''
-    divVelha.classList.add('black')
     for(let i in gameArray) {
-        const button = document.createElement('button');
-        button.classList.add('btn-game')
+        const button = document.createElement('div');
+        button.classList.add('div-game')
         button.innerText = gameArray[i]
         button.addEventListener('click',()=>{
             if(button.innerText === ''){

@@ -3,14 +3,20 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Open Sans', Arial, sans-serif;
+    color: rgb(222, 214, 214);
+    text-decoration: none;
 }
 
 body{
-    background-color: lightslategrey;
+    background-color: rgb(57, 58, 60);
 }
 
-header{
-    font-size: 1.5rem;
+#header{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-evenly;
+    font-size: 1.2rem;
     text-align: center;
     padding: .7rem;
     word-wrap: break-word;
@@ -18,6 +24,12 @@ header{
 
 h3{
     margin-bottom: .3rem;
+}
+
+.git-icon{
+    color: white;
+    height: 20px;
+    width: 20px;
 }
 
 #status{
@@ -37,19 +49,23 @@ h3{
 }
 
 .btn{
+    background-color: #1c1c1c;
     padding: .4rem;
-    border: 1px solid #1c1c1c;
+    border: 2px solid #fff;
     border-radius: .3rem;
     font-weight: bold;
 }
 
-.btn-game{
+.div-game{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     background-color: #fff;
     color: #1c1c1c;
     font-weight: bold;
-    font-size: 80px;
-    text-align: center;
-    border: 1px solid #1c1c1c;
+    font-size: 1em;
+    border: 3px solid #1c1c1c;
 }
 
 .input-container{
@@ -61,24 +77,21 @@ h3{
 }
 
 #room{
+    background-color: #1c1c1c;
     width: 200px;
     max-width: 80%;
     padding: .4rem;
-    border: none;
+    border: 2px solid #fff;
     border-radius: .3rem;
 }
 
 #room:focus{
-    background-color: rgb(206, 207, 211);
+    background-color: rgb(51, 51, 55);
 }
 
 #room:focus, .btn-game{ 
     box-shadow: 0 0 0 0;
     outline: none;
-}
-
-.black{
-    background-color: black;
 }
 
 #velha{
@@ -91,9 +104,9 @@ h3{
     margin-top: 1rem;
 }
 
-@media (min-width: 900px){
+/* @media (min-width: 900px){
     #velha{
         width: 550px;
         height: 550px;
     }
-}
+} */

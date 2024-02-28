@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
   })
 })
 
-function createRoom(socket, playerData) {
+const createRoom =(socket, playerData) => {
   let currentRoom = findRoom(playerData)
 
   if (currentRoom) {
@@ -74,14 +74,14 @@ function createRoom(socket, playerData) {
   }
 }
 
-function symbolDefine(playerData) {
+const symbolDefine = (playerData) => {
   let currentRoom = findRoom(playerData)
   let { players } = currentRoom
   io.to(players.id[0]).emit('symbol', players.player1)
   io.to(players.id[1]).emit('symbol', players.player2)
 }
 
-function inicializeGame(playerData) {
+const inicializeGame = (playerData) => {
   let { room, gameStatus, players } = findRoom(playerData)
 
   if (players.id.length == 2) {
@@ -93,7 +93,7 @@ function inicializeGame(playerData) {
 }
 
 
-function checkGame(playerData) {
+const checkGame = (playerData) => {
   let {room, gameStatus} = findRoom(playerData)
 
   for (let i in winSequence) {
@@ -120,11 +120,11 @@ function checkGame(playerData) {
   }
 }
 
-function findRoom(roomData){
+const findRoom = (roomData) => {
   return rooms.find(room => room.room === roomData.room)
 }
 
-function joinGame(playerData, room, socket){
+const joinGame = (playerData, room, socket) => {
   if (room.players.id.length < 2) {
     socket.join(`${playerData.room}`)
     room.players.id.push(socket.id)
@@ -133,7 +133,7 @@ function joinGame(playerData, room, socket){
   }
 }
 
-function createNewRoom(socket, playerData){
+const createNewRoom = (socket, playerData) => {
   const newRoom = {
     room: playerData.room,
     players: {
@@ -151,7 +151,7 @@ function createNewRoom(socket, playerData){
   socket.join(playerData.room)
 }
 
-function makeMove(socket, playerData, symbol, positionMove){
+const makeMove = (socket, playerData, symbol, positionMove) => {
   let currentRoom = findRoom(playerData)
   let { room, gameStatus } = currentRoom
 
@@ -171,7 +171,7 @@ function makeMove(socket, playerData, symbol, positionMove){
 
 }
 
-function winMsg(room, statusGame, winner){
+const winMsg = (room, statusGame, winner) => {
   statusGame.gameOver = true
 
   if(winner){
